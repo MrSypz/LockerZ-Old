@@ -1,0 +1,118 @@
+/* Existing styles */
+.category-selector {
+    position: relative;
+    margin: 10px 0;
+}
+
+.category-selector label {
+    font-size: 16px;
+    margin-right: 10px;
+    color: #2e2e2f;
+}
+#new-category {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #2e2e2f;
+    border-radius: 4px;
+    background-color: #1e272e;
+    color: #eee;
+    font-size: 16px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+#new-category:focus {
+    outline: none;
+    border-color: #007bff;
+    background-color: #2e2e2f;
+    color: #fff;
+}
+
+#category {
+    background-color: #1e272e;
+    color: #eee;
+    border: 1px solid #2e2e2f;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
+    width: 200px;
+}
+
+#category:hover {
+    background-color: #2e2e2f;
+    color: #ffaa00;
+    transform: scale(1.05);
+}
+
+#category option {
+    background-color: #1e1e1f;
+    color: #eee;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#category option:hover {
+    color: #ffaa00; /* Yellow text color on hover */
+    background-color: #2e2e2f;
+}
+#category-list {
+    display: flex;
+    gap: 10px;  /* Add some space between items */
+    list-style-type: none;
+    padding: 0;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#category-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;  /* Add space between category text and buttons */
+    padding: 5px 10px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+
+#category-list button {
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 13px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 0 5px;
+}
+
+.custom-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.custom-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.delete-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 13px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 0 5px;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Locker</title>
+    <link rel="stylesheet" href="{{ lookup }}css/locker.css">
+    <link rel="stylesheet" href="{{ lookup }}css/navbar.css">
+    <link rel="stylesheet" href="{{ lookup }}css/fontstyle.css">
+    <link rel="stylesheet" href="{{ lookup }}css/imgpreview.css">
+    <link rel="stylesheet" href="{{ lookup }}css/categoryselect.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <h1 class="logo">LockerZ</h1>
+            </a>
+        </div>
+        <div class='dropdown'>
+            <a href='#'>Content</a>
+            <div class='dropdown-content'>
+                <a href="{{ url_for('category') }}">Category</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>Locker Container of <span id="currentCategory"></span></h1>
+        <div class="category-selector">
+            <label for="category">Select Category:</label>
+            <select id="category" class="dropdown" onchange="updateCategory()"></select>
+        </div>
+
+        <div id="context-menu" class="context-menu">
+            <ul><li id="delete-option">Delete</li></ul>
+        </div>
+
+        <div id="modalImgPreview" class="modal" onclick="closeModal(event)">
+            <span class="close" onclick="closeModal(event)">&times;</span>
+            <img class="modal-content" id="modalImg" onclick="toggleZoom(event)">
+            <div id="imageSize" class="image-size"></div>
+        </div>
+        
+        <div class="image-gallery" id="image-gallery"></div>
+    </div>
+
+    <script src="{{ lookup }}scripts/LockerList.js"></script>
+    <script src="{{ lookup }}scripts/ModalImgAction.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            populateCategorySelector();
+            setupDropZone();
+        });
+
+        document.getElementById("category").addEventListener("change", updateCategory);
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+.navbar {
+    display: flex;
+    padding: 5px 20px; /* Reduced vertical padding */
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e272e; /* Slightly lighter dark color */
+}
+
+.navbar a {
+    font-size: 24px; /* Reduced font size */
+    color: #eee; /* Gold color for links */
+    text-decoration: none;
+    padding: 8px 15px; /* Reduced padding for links */
+    display: inline-block;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #ffaa00; /* Very light grey */
+    transform: scale(1.05); /* Reduced scale effect */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: block;
+    position: absolute;
+    min-width: 140px;
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.2);
+    background-color: #1e1e1f; /* Dark grey background for dropdown */
+    right: 5px;
+    z-index: 100;
+    border-radius: 8px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.3s ease;
+}
+
+.dropdown-content a {
+    font-size: 18px; /* Slightly smaller font size for dropdown items */
+    color: #eee; /* Gold color for dropdown links */
+    padding: 10px 15px; /* Adjusted padding for dropdown items */
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: #2e2e2f; /* Slightly lighter dark grey on hover */
+}
+
+.dropdown:hover .dropdown-content {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 500px; /* This can remain as is */
+}

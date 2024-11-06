@@ -1,0 +1,91 @@
+/* Style for the version tag */
+.version-tag {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff; /* Blue color for version */
+    margin-right: 10px; /* Space after the version number */
+}
+
+/* Style for the version text */
+#app-version {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Changelog Section */
+.changelog {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.changelog h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2e2e2f;
+    margin-bottom: 10px;
+}
+
+.changelog h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1e272e;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.changelog h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    margin-top: 10px;
+}
+
+.changelog ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.changelog ul li {
+    margin-bottom: 5px;
+}
+
+.changelog p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.changelog code {
+    background-color: #f4f4f4;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #d6336c;
+}
+
+.changelog blockquote {
+    border-left: 4px solid #007bff;
+    padding-left: 16px;
+    margin: 10px 0;
+    font-style: italic;
+    color: #777;
+}
+
+/* Link Styling */
+.changelog a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.changelog a:hover {
+    text-decoration: underline;
+}

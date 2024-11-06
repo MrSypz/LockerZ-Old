@@ -1,0 +1,48 @@
+{
+  "name": "lockerz",
+  "version": "0.1.1",
+  "main": "main.js",
+  "icon": "src/public/resource/assets/favicon.ico",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [],
+  "author": "MrSypz",
+  "license": "ARR",
+  "description": "Simple Storage Program",
+  "devDependencies": {
+    "electron": "^33.0.2",
+    "electron-builder": "^25.1.8",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
+  },
+  "build": {
+    "appId": "com.MySypz.LockerZ",
+    "productName": "Remote LockerZ",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "src/public/resource/assets/favicon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": true,
+      "allowElevation": true,
+      "installerIcon": "src/public/resource/assets/favicon.ico",
+      "uninstallerIcon": "src/public/resource/assets/favicon.ico",
+      "uninstallDisplayName": "Uninstall Remote LockerZ",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LockerZ</title>
+    <link rel="stylesheet" href="{{ lookup }}css/dashboard.css">
+    <link rel="stylesheet" href="{{ lookup }}css/navbar.css">
+    <link rel="stylesheet" href="{{ lookup }}css/fontstyle.css">
+    <link rel="stylesheet" href="{{ lookup }}css/changelog.css">
+
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <h1 class="logo">LockerZ</h1>
+            </a>
+        </div>
+        <div class='dropdown'>
+            <a href='#'>Content</a>
+            <div class='dropdown-content'>
+                <a href="{{ url_for('locker') }}">My Locker</a>
+                <a href="{{ url_for('category') }}">My Category</a>
+                <a href="{{ url_for('setfolder') }}">My Directory</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="header">
+        <img src="{{ lookup }}resource/assets/index/banner.png" alt="Art Banner">
+        <div class="header-text">
+            <h2>Welcome to LockerZ</h2>
+            <div class="linebar"></div>
+            <p>Let's Manage Picture! For easy to look into ref.</p>
+            <p>Version: <a href="#version-0.1.1" id="version-link"><span id="app-version">Loading...</span></a></p>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="changelog">
+            <h1>Changelog</h1>
+            <p>All notable changes to this project will be documented in this.</p>
+            <div class="linebar"></div>
+            <h2 id="version-0.1.1"><span class="version-tag">[0.1.1]</span> 06-11-2024</h2>
+            <h3>Performance Improve</h3>
+            <li>Optimize Multithread for flaskLog and flaskProcess.</li>
+            <li>Optimize Responding on http request.</li>
+            <h3>Qol</h3>
+            <li>Add Modal when click delete category.</li>
+            <li>Add Modal when create new category.</li>
+            <li>Add Modal when edit success or not.</li>
+            <h3>Fix</h3>
+            <li>Edit Category are not edit correctly.</li>
+            <div class="linebar"></div>
+            <h2 id="version-0.1.0"><span class="version-tag">[0.1.0]</span> 05-11-2024</h2>
+            <h3>Initial Beta</h3>
+            The first problem that I create this program is I'm too tried when tying to looking for ref and it a real
+            time spent for looking into that that I didn't manage the file, So instead of create the folder by manual
+            why just make like this to preview the image in real time and easy to navigate the folder!
+
+            <h2>Concept</h2>
+            The concept of this program is the locker you can have many as many as your can / you can store and it store only img
+            the category file path are <code>C:\Users\"YourUser"\LockerZ</code> and all your categories and files are in here!
+            just simple by this when you want to look into that you can just look into the locker it self and because it not the real world
+            imaging that you're in the matrix and in the locker room your can navigate by just the 'Word'!
+            <h3>Feature</h3>
+            <h4>Category</h4>
+            First when your program install you can't find any category because this program are base on user need!
+            so make your own category and go!
+            <ul>
+                <li>Now you are navigate your file by category!</li>
+                <li>You can edit or delete it anytime! but for edit make sure your category is empty!</li>
+            </ul>
+            <h4>Locker</h4>
+            <ul>
+                <li>Your image are now gonna in the Locker( folder with name of your category ) and it have image preview Feature too!</li>
+            </ul>
+            <h4>Image Preview</h4>
+            <ul>
+                <li>You're able to see your image without Zooming 300% and you are now can click too see the full image!</li>
+            </ul>
+            <h4>Drag n Drop</h4>
+            <ul>
+                <li>You can upload your image into the category that you have made</li>
+            </ul>
+        </div>
+    </main>
+
+    <script>
+        window.electron.getVersion().then(version => {
+            document.getElementById('app-version').textContent = version;  // Set version text
+        }).catch(err => {
+            console.error('Error getting version:', err);
+        });
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header');
+            const scrollY = window.scrollY;
+
+            if (scrollY > 100) {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    height: 100%; /* Make container take the full height */
+}
+
+/* Image gallery */
+.image-gallery {
+    display: flex;
+    align-items: flex-start; /* Align items at the start */
+    justify-content: flex-start; /* Align items at the start */
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    gap: 20px; /* Space between items */
+    width: 100%;
+    padding: 20px;
+    background-color: #f2f2f2;
+    overflow-y: auto; /* Allow vertical scrolling */
+}
+
+.drop-message {
+    text-align: center;
+    font-size: 16px;
+    color: #888;
+    margin-top: 50px; /* Center the message vertically */
+    cursor: pointer;
+}
+
+
+.image-container {
+    flex: 0 0 auto; /* Do not allow the container to grow or shrink */
+    border: 0;
+    padding: 10px;
+    width: 200px; /* Fixed width */
+    height: 400px; /* Fixed height */
+    text-align: center;
+    transform: translateY(var(--offset, 0)); /* Apply the offset */
+
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.image-container img:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.context-menu {
+    position: absolute;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    backdrop-filter: blur(8px); /* Blur effect */
+    z-index: 1000;
+    opacity: 0; /* Start invisible */
+    transform: scale(0.9); /* Start slightly smaller */
+    transition: opacity 0.2s ease, transform 0.2s ease; /* Animation properties */
+}
+
+.context-menu.active {
+    opacity: 1; /* Fade in */
+    transform: scale(1); /* Scale to normal size */
+}
+
+.context-menu ul {
+    list-style-type: none;
+    padding: 5px;
+    margin: 0;
+}
+
+.context-menu li {
+    padding: 8px 12px;
+    color: white;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.context-menu li:hover {
+    color: rgb(49, 48, 48);
+    background-color: rgb(255 255 255 / 80%); /* Semi-translucent background */
+}
+
