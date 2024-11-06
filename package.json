@@ -5,13 +5,14 @@
   "icon": "src/public/resource/assets/favicon.ico",
   "scripts": {
     "start": "electron .",
+    "buildloc": "electron-packager . LockerZ --platform=win32 --arch=x64 --out=dist --icon=src/public/resource/assets/favicon.ico --overwrite",
     "build": "electron-builder --win --x64",
     "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [],
   "author": "MrSypz",
   "license": "ARR",
-  "description": "Simple Storage Program",
+  "description": "Let organize your reference!",
   "devDependencies": {
     "electron": "^33.0.2",
     "electron-builder": "^25.1.8",
@@ -21,28 +22,28 @@
     "axios": "^1.7.7"
   },
   "build": {
-    "appId": "com.MySypz.LockerZ",
-    "productName": "Remote LockerZ",
+    "appId": "LockerZ",
+    "productName": "LockerZ",
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         }
       ],
       "icon": "src/public/resource/assets/favicon.ico"
     },
     "nsis": {
-      "oneClick": true,
+      "oneClick": false,
       "perMachine": true,
       "allowElevation": true,
       "installerIcon": "src/public/resource/assets/favicon.ico",
       "uninstallerIcon": "src/public/resource/assets/favicon.ico",
-      "uninstallDisplayName": "Uninstall Remote LockerZ",
+      "uninstallDisplayName": "Uninstall LockerZ",
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
-    }
+      "createStartMenuShortcut": true,
+      "allowToChangeInstallationDirectory": true
+    },
+    "asar": false
   }
 }

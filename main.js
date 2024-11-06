@@ -133,25 +133,7 @@ function showLoadingScreen() {
     return loadingWindow;
 }
 
-app.whenReady().then(() => {
-    // ipcMain.handle('select-folder', async () => {
-    //     const result = await dialog.showOpenDialog({
-    //         properties: ['openDirectory'],
-    //     });
-    
-    //     if (!result.canceled && result.filePaths.length > 0) {
-    //         const selectedFolderPath = result.filePaths[0];
-    
-    //         // Save the selected folder path to a file (e.g., config.json)
-    //         const configPath = path.join(app.getPath('userData'), 'config.json');
-    //         fs.writeFileSync(configPath, JSON.stringify({ folderPath: selectedFolderPath }));
-    
-    //         return selectedFolderPath;  // Return the selected folder path
-    //     }
-    
-    //     return null;  // Return null if no folder was selected or dialog was canceled
-    // });
-
+app.on('ready',() => {
     const loadingWindow = showLoadingScreen();
 
     startFlask()
