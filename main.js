@@ -12,6 +12,41 @@ ipcMain.handle('get-version', () => {
     return packageInfo.version;
 });
 
+ipcMain.handle('get-category-path', (event, category) => {
+    return path.join(folderPath, category);  // Return the full category path
+});
+
+ipcMain.on('sendFilePaths', (event, { filePaths, categoryPath, selectedCategory }) => {
+    console.log('Received file paths:', filePaths);
+    console.log('Selected category path:', categoryPath);
+    console.log('Selected category as:', selectedCategory);
+
+    filePaths.forEach(filePath => {
+        const fileName = path.basename(filePath);
+        const destinationPath = path.join(categoryPath, selectedCategory, fileName);
+
+        try {
+            // Ensure the category folder exists
+            if (!fs.existsSync(categoryPath)) {
+                fs.mkdirSync(categoryPath, { recursive: true });
+                console.log(`Created category folder: ${categoryPath}`);
+            }
+
+            // Move file to the category folder
+            fs.rename(filePath, destinationPath, (err) => {
+                if (err) {
+                    console.error('Error moving file:', err);
+                } else {
+                    console.log('File moved successfully:', fileName);
+                }
+            });
+
+        } catch (error) {
+            console.error('Failed to move file:', error);
+        }
+    });
+});
+
 ipcMain.handle('select-folder', async () => {
     const result = await dialog.showOpenDialog({
         properties: ['openDirectory'],
@@ -23,6 +58,44 @@ ipcMain.handle('select-folder', async () => {
     return null;
 });
 
+ipcMain.on('file-drop', (event, { filePaths, categoryName, categoryPath }) => {
+    console.log('Received file paths:', filePaths);
+    console.log('Selected category name:', categoryName);
+    console.log('Selected category path:', categoryPath);
+    const amount = filePaths.length;
+    filePaths.forEach(filePath => {
+        const fileName = path.basename(filePath);
+        const destinationPath = path.join(categoryPath, categoryName, fileName);
+
+        try {
+            if (!fs.existsSync(categoryPath)) {
+                fs.mkdirSync(categoryPath, { recursive: true });
+                console.log(`Created folder: ${categoryPath}`);
+            }
+
+            fs.copyFile(filePath, destinationPath, (err) => {
+                if (err) {
+                    console.error('Error copying file:', err);
+                } else {
+                    fs.unlink(filePath, (err) => {
+                        if (err) {
+                            console.error('Error deleting original file:', err);
+                        } else {
+                            console.log('Original file deleted after copy');
+                        }
+                    });
+                    console.log('File copied successfully:', fileName);
+                }
+            });
+        } catch (error) {
+            console.error('Failed to copy file:', error);
+        }
+    });
+    amount > 1 ? event.reply('file-upload-complete', { success: true, message: `All ${amount} files uploaded successfully` }) : event.reply('file-upload-complete', { success: true, message: `${amount} file uploaded successfully` })
+
+});
+
+
 ipcMain.handle('update-folder-path', async (event, newFolderPath) => {
     try {
         const response = await axios.post('http://localhost:5000/update_folder_path', {
@@ -30,7 +103,6 @@ ipcMain.handle('update-folder-path', async (event, newFolderPath) => {
         });
 
         if (response.data.success) {
-            // Update the config.json or any persistent storage
             const configPath = path.join(app.getPath('userData'), 'config.json');
             fs.writeFileSync(configPath, JSON.stringify({ folderPath: newFolderPath }));
 
@@ -85,9 +157,8 @@ function createMainWindow() {
         height: 1080,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),  // Ensure this path is correct
-            nodeIntegration: false,
-            contextIsolation: true,
-            enableRemoteModule: false,
+            nodeIntegration: true,
+            enableRemoteModule: true,
         },
         autoHideMenuBar: true,
         icon: path.join(__dirname, 'public', 'resource', 'assets', 'favicon.ico'),
