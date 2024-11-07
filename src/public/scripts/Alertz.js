@@ -8,7 +8,6 @@ function showLockerZAlert(message) {
 
     alertOkButton.onclick = () => {
         alertBox.style.display = "none";
-        document.getElementById("new-category").focus(); // Return focus to the input
     };
 }
 
