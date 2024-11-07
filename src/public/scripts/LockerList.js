@@ -40,15 +40,14 @@ function updateCategory() {
     const categoryList = document.getElementById("category").value;
     if (categoryList.trim() === '')
         document.getElementById("currentCategory").textContent = "No category available";
-     else 
-        document.getElementById("currentCategory").textContent = categoryList; 
-    
+    else
+        document.getElementById("currentCategory").textContent = categoryList;
+
     loadImages();
 }
 
 let categoryToDelete = null;  // To store the category that the user intends to delete
 
-// Display the list of categories
 function displayCategories() {
     const categoryList = document.getElementById("category-list");
     const editCategoryModal = document.getElementById("edit-category-modal");
@@ -80,7 +79,6 @@ function displayCategories() {
 
                 listItem.appendChild(editButton);
 
-                // Create Delete button
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Delete";
                 deleteButton.classList.add("custom-button", "delete-button"); // Add custom button and delete button classes
@@ -95,13 +93,11 @@ function displayCategories() {
         })
         .catch(err => console.error(err));
 
-    // Handle submit of new category name
     submitEditButton.addEventListener("click", () => {
         const newCategoryName = editCategoryInput.value.trim();
         const oldCategoryName = editCategoryInput.dataset.oldCategory.trim(); // Store old category name in dataset
 
         if (newCategoryName && newCategoryName !== oldCategoryName) {
-            // Call editCategory to rename the category
             editCategory(oldCategoryName, newCategoryName); // Renaming the category
             editCategoryModal.style.display = "none"; // Close the modal after submitting
         } else {
@@ -109,12 +105,10 @@ function displayCategories() {
         }
     });
 
-    // Handle cancel button (close the modal without saving)
     cancelEditButton.addEventListener("click", () => {
         editCategoryModal.style.display = "none"; // Hide the modal without making any changes
     });
 
-    // Confirm Deletion
     submitConfirmButton.addEventListener("click", () => {
         if (categoryToDelete) {
             deleteCategory(categoryToDelete);  // Delete the category after confirmation
@@ -122,7 +116,6 @@ function displayCategories() {
         }
     });
 
-    // Cancel Deletion
     cancelConfirmButton.addEventListener("click", () => {
         confirmModal.style.display = "none"; // Hide the confirm modal without deleting
     });
@@ -141,14 +134,14 @@ function editCategory(oldCategory, newCategory) {
             newCategory: newCategory
         })
     })
-    .then(response => {
-        if (response.ok) {
-            displayCategories(); // Refresh the category list after renaming
-        } else {
-            showLockerZAlert("Failed to rename category.");
-        }
-    })
-    .catch(err => console.error("Error renaming category: ", err));
+        .then(response => {
+            if (response.ok) {
+                displayCategories(); // Refresh the category list after renaming
+            } else {
+                showLockerZAlert("Failed to rename category.");
+            }
+        })
+        .catch(err => console.error("Error renaming category: ", err));
 }
 
 
@@ -160,14 +153,14 @@ function deleteCategory(category) {
         },
         body: JSON.stringify({ category: category })
     })
-    .then(response => {
-        if (response.ok) {
-            displayCategories(); // Refresh the category list after deletion
-        } else {
-            showLockerZAlert("Failed to delete category.");
-        }
-    })
-    .catch(err => console.error(err));
+        .then(response => {
+            if (response.ok) {
+                displayCategories(); // Refresh the category list after deletion
+            } else {
+                showLockerZAlert("Failed to delete category.");
+            }
+        })
+        .catch(err => console.error(err));
 }
 
 function createCategory(newCategory) {
@@ -179,18 +172,18 @@ function createCategory(newCategory) {
             },
             body: JSON.stringify({ category: newCategory })
         })
-        .then(response => {
-            if (response.ok) {
-                populateCategorySelector(); // Refresh the selector in locker.html
-                displayCategories(); // Refresh the category list
-                showLockerZAlert("Category created!");
-            } else {
-                showLockerZAlert("Category already exists or failed to create.");
-            }
-        })
-        .catch(() => {
-            showLockerZAlert("Failed to create category due to network or server error.");
-        });
+            .then(response => {
+                if (response.ok) {
+                    populateCategorySelector(); // Refresh the selector in locker.html
+                    displayCategories(); // Refresh the category list
+                    showLockerZAlert("Category created!");
+                } else {
+                    showLockerZAlert("Category already exists or failed to create.");
+                }
+            })
+            .catch(() => {
+                showLockerZAlert("Failed to create category due to network or server error.");
+            });
     }
 }
 
@@ -198,27 +191,31 @@ async function generateImageGallery() {
     const galleryContainer = document.getElementById('image-gallery');
     galleryContainer.innerHTML = '';
     const selectedCategory = document.getElementById("category").value;
+
     if (uploadedImages.size === 0) {
         const dropMessage = document.createElement('div');
         dropMessage.textContent = "No images found for this category. Drop your images here!";
         dropMessage.classList.add('drop-message');
         galleryContainer.appendChild(dropMessage);
-        return; 
+        return;
     }
 
     [...uploadedImages].forEach((fileName, index) => {
         const imageDiv = document.createElement('div');
         imageDiv.classList.add('image-container');
 
-         offsetValue = index % 2 == 0 ? -20 : 0 ;
-         imageDiv.style.setProperty('--offset', `${offsetValue}px`);
- 
+        let offsetValue = index % 2 === 0 ? -20 : 0;
+        imageDiv.style.setProperty('--offset', `${offsetValue}px`);
 
         const image = document.createElement('img');
-        image.src = `/files/${selectedCategory}/${fileName}`;
+        image.src = '';
         image.alt = fileName;
         image.id = `img-${fileName}`;
+        image.classList.add('image');
         image.loading = 'lazy';
+        image.onload = () => {
+            image.classList.add('loaded');
+        };
         image.onclick = function () {
             openModal(image.src);
         };
@@ -230,8 +227,22 @@ async function generateImageGallery() {
 
         imageDiv.appendChild(image);
         galleryContainer.appendChild(imageDiv);
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    image.src = `/files/${selectedCategory}/${fileName}`;  // Lazy load the image
+                    observer.disconnect();  // Stop observing once the image has been loaded
+                } else {
+                    image.src = '';
+                }
+            });
+        }, { threshold: 0.5 }); // Trigger when 50% of the image is in view
+
+        observer.observe(imageDiv);
     });
 }
+
 
 function showContextMenu(event, fileName) {
     event.preventDefault();
@@ -249,28 +260,7 @@ function showContextMenu(event, fileName) {
 
     document.addEventListener("click", () => {
         contextMenu.classList.remove("active");
-    }, {once: true});
-}
-
-function uploadFile(file) {
-    const selectedCategory = document.getElementById("category").value;
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('category', selectedCategory);
-
-    fetch('/upload_file', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => {
-            if (response.ok) {
-                loadImages();
-            } else {
-                showLockerZAlert("Failed to upload file.");
-            }
-        })
-        .catch(err => console.error(err));
+    }, { once: true });
 }
 
 function loadImages() {
@@ -310,7 +300,7 @@ function deleteImage(fileName) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({fileName: fileName, category: selectedCategory})
+        body: JSON.stringify({ fileName: fileName, category: selectedCategory })
     })
         .then(response => {
             if (response.ok) {
@@ -325,6 +315,7 @@ function deleteImage(fileName) {
 
 function setupDropZone() {
     const galleryContainer = document.getElementById('image-gallery');
+    const categorySelect = document.getElementById("category"); // Assuming the category dropdown is used.
 
     galleryContainer.addEventListener('dragover', (event) => {
         event.preventDefault();
@@ -335,13 +326,40 @@ function setupDropZone() {
         galleryContainer.classList.remove('dragging');
     });
 
-    galleryContainer.addEventListener('drop', (event) => {
+    galleryContainer.addEventListener('drop', async (event) => {
         event.preventDefault();
         galleryContainer.classList.remove('dragging');
 
-        const files = event.dataTransfer.files;
-        for (const file of files) {
-            uploadFile(file);
+        const files = Array.from(event.dataTransfer.files);
+
+        const filePaths = files.map(file => {
+            return window.electron.getFilePath(file);  // Use the method exposed by the preload script
+        });
+
+        const selectedCategory = categorySelect.value;
+        const categoryPath = await window.electron.getCategoryPath(selectedCategory);  // Get the full path for the selected category
+
+        if (filePaths.length > 0 && filePaths[0] && categoryPath) {
+            window.electron.sendFilePaths({
+                filePaths,
+                categoryName: selectedCategory,  // Send the category name
+                categoryPath  // Send the full category path
+            });
+        } else {
+            console.error('No valid file paths or category path missing.');
+        }
+    });
+    refreshPageAfterUpload();
+}
+function refreshPageAfterUpload() {
+    window.electron.onFileUploadComplete(({ success, message }) => {
+        if (success) {
+            console.log(message);  // Success message
+            showLockerZAlert(message);
+            loadImages();  // Call your function to refresh the image gallery
+        } else {
+            showLockerZAlert('File upload failed:', message)
+            console.error('File upload failed:', message);
         }
     });
 }

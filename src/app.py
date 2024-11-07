@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory, render_template,
 import json
 import os
 import threading
+import shutil
 
 app = Flask(__name__, static_folder='public', template_folder='public')
 
@@ -17,6 +18,11 @@ def get_folder_path():
         return os.path.join(os.path.expanduser('~'), 'LockerZ')  # Fallback path if reading the config fails
 
 folder_path = get_folder_path()
+
+@app.route('/get_folder_path', methods=['GET'])
+def get_folder_path_route():
+    return jsonify({'folderPath': folder_path})
+
 
 @app.route('/update_folder_path', methods=['POST'])
 def update_folder_path():
@@ -74,15 +80,19 @@ def create_category():
 
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
-    file = request.files['file']
+    file_path = request.form['file_path']
     category = request.form['category']
     category_path = os.path.join(folder_path, category)
 
     if not os.path.exists(category_path):
         os.makedirs(category_path)
 
-    file.save(os.path.join(category_path, file.filename))  # Save directly into the category folder
-    return jsonify(success=True)
+    try:
+        shutil.move(file_path, os.path.join(category_path, os.path.basename(file_path)))
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
+
 
 @app.route('/rename_category', methods=['POST'])
 def rename_category():
