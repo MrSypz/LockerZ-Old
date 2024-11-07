@@ -55,12 +55,17 @@ html, body {
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
-    transition: color 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transition: color 0.3s ease, transform 0.3s ease, opacity 0.5s ease;
 }
 
 .image-container img:hover {
     cursor: pointer;
     transform: scale(1.05);
+}
+
+.image-container img.loaded {
+    opacity: 1;
 }
 
 .context-menu {

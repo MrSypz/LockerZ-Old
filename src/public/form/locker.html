@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{{ lookup }}css/fontstyle.css">
     <link rel="stylesheet" href="{{ lookup }}css/imgpreview.css">
     <link rel="stylesheet" href="{{ lookup }}css/categoryselect.css">
+    <link rel="stylesheet" href="{{ lookup }}css/lockeralert.css">
+    <link rel="stylesheet" href="{{ lookup }}css/progress.css">
 </head>
 
 <body>
@@ -26,6 +28,12 @@
             </div>
         </div>
     </nav>
+    <div id="lockerz-alert" class="lockerz-alert" style="display: none;">
+        <div class="alert-content">
+            <p id="alert-message"></p>
+            <button id="alert-ok-button">OK</button>
+        </div>
+    </div>
     <div class="container">
         <h1>Locker Container of <span id="currentCategory"></span></h1>
         <div class="category-selector">
@@ -45,7 +53,7 @@
         
         <div class="image-gallery" id="image-gallery"></div>
     </div>
-
+    <script src="{{ lookup }}scripts/Alertz.js"></script>
     <script src="{{ lookup }}scripts/LockerList.js"></script>
     <script src="{{ lookup }}scripts/ModalImgAction.js"></script>
     <script>
@@ -55,7 +63,6 @@
         });
 
         document.getElementById("category").addEventListener("change", updateCategory);
-
     </script>
 </body>
 
