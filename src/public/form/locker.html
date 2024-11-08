@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ lookup }}css/imgpreview.css">
     <link rel="stylesheet" href="{{ lookup }}css/categoryselect.css">
     <link rel="stylesheet" href="{{ lookup }}css/lockeralert.css">
+    <link rel="stylesheet" href="{{ lookup }}css/tagbox.css">
 </head>
 
 <body>
@@ -27,10 +28,18 @@
             </div>
         </div>
     </nav>
+    <div id="tag-modal" class="lockerz-alert" style="display: none;">
+        <div class="alert-content">
+            <h2>Add Tag</h2>
+            <input type="text" id="tag-input" placeholder="Enter a tag" />
+            <button class ="agree-btn" id="save-tag-button">Save Tag</button>
+            <button class ="disagree-btn" id="close-tag-button">Close</button>
+        </div>
+    </div>
     <div id="lockerz-alert" class="lockerz-alert" style="display: none;">
         <div class="alert-content">
             <p id="alert-message"></p>
-            <button id="alert-ok-button">OK</button>
+            <button class ="agree-btn" id="alert-ok-button">OK</button>
         </div>
     </div>
     <div class="container">
@@ -41,7 +50,10 @@
         </div>
 
         <div id="context-menu" class="context-menu">
-            <ul><li id="delete-option">Delete</li></ul>
+            <ul>
+                <li id="delete-option">Delete</li>
+                <li id="add-tag-option">Add Tag</li> <!-- New "Add Tag" option -->
+            </ul>
         </div>
 
         <div id="modalImgPreview" class="modal" onclick="closeModal(event)">
@@ -52,11 +64,14 @@
 
         <div class="image-gallery" id="image-gallery"></div>
     </div>
-    <script src="{{ lookup }}scripts/Alertz.js"></script>
-    <script src="{{ lookup }}scripts/LockerList.js"></script>
-    <script src="{{ lookup }}scripts/ModalImgAction.js"></script>
+    <script src="{{ lookup }}scripts/Alertz.js" defer></script>
+    <script src="{{ lookup }}scripts/LockerList.js" defer></script>
+    <script src="{{ lookup }}scripts/ModalImgAction.js" defer></script>
+    <script src="{{ lookup }}scripts/TagKey.js" defer></script>
+    <script src="{{ lookup }}scripts/ContextMenu.js" defer></script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", () => {
             populateCategorySelector();
             setupDropZone();
         });

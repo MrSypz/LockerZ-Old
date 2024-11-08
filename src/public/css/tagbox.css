@@ -1,0 +1,19 @@
+.tags-container {
+    max-height: 60px; /* Limit the height of tags container */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 5px;
+    justify-content: center;
+}
+.tag {
+    background-color: #ddd;
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap; /* Prevent text from wrapping within a tag */
+}
+
+.no-tags {
+    font-style: italic;
+    color: #aaa;
+}

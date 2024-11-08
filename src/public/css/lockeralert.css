@@ -25,7 +25,7 @@
 }
 
 /* OK button styling and color change on click */
-#alert-ok-button {
+.agree-btn {
     background-color: #007bff;
     color: white;
     padding: 10px 20px;
@@ -35,8 +35,24 @@
     transition: background-color 0.3s;
 }
 
-#alert-ok-button:active {
+.agree-btn:hover {
     background-color: #0056b3;
+}
+
+.disagree-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 13px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 0 5px;
+}
+
+.disagree-btn:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
 }
 
 /* Fade-in animation */

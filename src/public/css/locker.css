@@ -5,31 +5,30 @@
 }
 
 html, body {
-    width: 100%;
     height: 100%;
-    overflow: hidden; /* Prevent scrolling */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
 }
-
 .container {
     display: flex;
     flex-direction: column;
     text-align: center;
-    height: 100%; /* Make container take the full height */
+    height: 100%;
 }
 
-/* Image gallery */
 .image-gallery {
     display: flex;
-    align-items: flex-start; /* Align items at the start */
-    justify-content: flex-start; /* Align items at the start */
-    flex-wrap: wrap; /* Allow items to wrap to the next line */
-    gap: 20px; /* Space between items */
+    gap: 20px;
     width: 100%;
     padding: 20px;
     background-color: #f2f2f2;
-    overflow-y: auto; /* Allow vertical scrolling */
+    /* overflow-y: auto; */ /* Allow vertical scrolling */
+    flex-grow: 1;
+    flex-wrap: wrap;
+    align-content: flex-start;
 }
-
 .drop-message {
     text-align: center;
     font-size: 16px;
@@ -40,23 +39,24 @@ html, body {
 
 
 .image-container {
-    flex: 0 0 auto; /* Do not allow the container to grow or shrink */
+    flex: 0 0 auto;
     border: 0;
     padding: 10px;
-    width: 200px; /* Fixed width */
-    height: 400px; /* Fixed height */
+    width: 200px;
+    height: 400px;
     text-align: center;
-    transform: translateY(var(--offset, 0)); /* Apply the offset */
-
+    transform: translateY(var(--offset, 0));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .image-container img {
     width: 100%;
-    height: 100%;
+    height: 340px;
     object-fit: cover;
     border-radius: 10px;
-    opacity: 0;
-    transition: color 0.3s ease, transform 0.3s ease, opacity 0.5s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .image-container img:hover {
@@ -64,24 +64,21 @@ html, body {
     transform: scale(1.05);
 }
 
-.image-container img.loaded {
-    opacity: 1;
-}
-
 .context-menu {
     position: absolute;
     border: 1px solid #ccc;
     border-radius: 10px;
-    backdrop-filter: blur(8px); /* Blur effect */
+    backdrop-filter: blur(8px);
     z-index: 1000;
-    opacity: 0; /* Start invisible */
-    transform: scale(0.9); /* Start slightly smaller */
-    transition: opacity 0.2s ease, transform 0.2s ease; /* Animation properties */
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .context-menu.active {
-    opacity: 1; /* Fade in */
-    transform: scale(1); /* Scale to normal size */
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .context-menu ul {
@@ -99,6 +96,5 @@ html, body {
 
 .context-menu li:hover {
     color: rgb(49, 48, 48);
-    background-color: rgb(255 255 255 / 80%); /* Semi-translucent background */
+    background-color: rgb(255 255 255 / 80%);
 }
-

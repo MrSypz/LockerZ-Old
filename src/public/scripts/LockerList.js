@@ -65,10 +65,10 @@ function displayCategories() {
     const submitConfirmButton = document.getElementById("submit-confirm");
     const cancelConfirmButton = document.getElementById("cancel-confirm");
 
-    fetch('/categories')  // Endpoint to get existing categories
+    fetch('/categories')
         .then(response => response.json())
         .then(data => {
-            categoryList.innerHTML = ''; // Clear existing list
+            categoryList.innerHTML = '';
 
             data.categories.forEach(category => {
                 const listItem = document.createElement("li");
@@ -77,21 +77,21 @@ function displayCategories() {
                 // Create Edit button
                 const editButton = document.createElement("button");
                 editButton.textContent = "Edit";
-                editButton.classList.add("custom-button"); // Add custom button class
+                editButton.classList.add("custom-button");
                 editButton.onclick = () => {
-                    editCategoryInput.value = category;  // Pre-fill the input with the current category
-                    editCategoryInput.dataset.oldCategory = category; // Store the old category in the dataset
-                    editCategoryModal.style.display = "flex"; // Show the modal
+                    editCategoryInput.value = category;
+                    editCategoryInput.dataset.oldCategory = category;
+                    editCategoryModal.style.display = "flex";
                 };
 
                 listItem.appendChild(editButton);
 
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Delete";
-                deleteButton.classList.add("custom-button", "delete-button"); // Add custom button and delete button classes
+                deleteButton.classList.add("custom-button", "delete-button");
                 deleteButton.onclick = () => {
-                    categoryToDelete = category; // Set the category to delete
-                    confirmModal.style.display = "flex"; // Show the confirmation modal
+                    categoryToDelete = category;
+                    confirmModal.style.display = "flex";
                 };
                 listItem.appendChild(deleteButton);
 
@@ -102,33 +102,32 @@ function displayCategories() {
 
     submitEditButton.addEventListener("click", () => {
         const newCategoryName = editCategoryInput.value.trim();
-        const oldCategoryName = editCategoryInput.dataset.oldCategory.trim(); // Store old category name in dataset
+        const oldCategoryName = editCategoryInput.dataset.oldCategory.trim();
 
         if (newCategoryName && newCategoryName !== oldCategoryName) {
-            editCategory(oldCategoryName, newCategoryName); // Renaming the category
-            editCategoryModal.style.display = "none"; // Close the modal after submitting
+            editCategory(oldCategoryName, newCategoryName);
+            editCategoryModal.style.display = "none";
         } else {
             showLockerZAlert("Please enter a new category name.");
         }
     });
 
     cancelEditButton.addEventListener("click", () => {
-        editCategoryModal.style.display = "none"; // Hide the modal without making any changes
+        editCategoryModal.style.display = "none";
     });
 
     submitConfirmButton.addEventListener("click", () => {
         if (categoryToDelete) {
-            deleteCategory(categoryToDelete);  // Delete the category after confirmation
-            confirmModal.style.display = "none"; // Hide the confirm modal
+            deleteCategory(categoryToDelete);
+            confirmModal.style.display = "none";
         }
     });
 
     cancelConfirmButton.addEventListener("click", () => {
-        confirmModal.style.display = "none"; // Hide the confirm modal without deleting
+        confirmModal.style.display = "none";
     });
 }
 // Only use in category.html
-// Function to rename the category (this is the core edit functionality)
 function editCategory(oldCategory, newCategory) {
     fetch('/rename_category', {
         method: 'POST',
@@ -207,7 +206,9 @@ async function generateImageGallery() {
         return;
     }
 
-    [...uploadedImages].forEach((fileName, index) => {
+    const imageCache = new Set();
+
+    for (const [index, fileName] of [...uploadedImages].entries()) {
         const imageDiv = document.createElement('div');
         imageDiv.classList.add('image-container');
 
@@ -218,66 +219,75 @@ async function generateImageGallery() {
         image.src = '';
         image.alt = fileName;
         image.id = `img-${fileName}`;
-        image.classList.add('image');
-        image.loading = 'lazy';
-        image.onload = () => {
-            image.classList.add('loaded');
-        };
+
+        // image.onload = () => {
+        //     image.classList.add('loaded');
+        // };
+
         image.onclick = function () {
             openModal(image.src);
         };
 
         image.oncontextmenu = function (event) {
             event.preventDefault();
-            showContextMenu(event, fileName);
+            showContextMenu(event, fileName, false, null);
         };
 
+        const tagsDiv = document.createElement('div');
+        tagsDiv.classList.add('tags-container');
+        const tags = await window.electron.getTagsForImage(fileName);
+
+        if (tags.length === 0) {
+            const noTagsMessage = document.createElement('span');
+            noTagsMessage.classList.add('no-tags');
+            noTagsMessage.textContent = 'No tags available';
+            tagsDiv.appendChild(noTagsMessage);
+        } else {
+            tags.slice(0, 3).forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.classList.add('tag');
+                tagElement.textContent = tag;
+                tagElement.oncontextmenu = function (event) {
+                    event.preventDefault();
+                    showContextMenu(event, fileName, true, tag);
+                };
+                tagsDiv.appendChild(tagElement);
+            });
+
+            if (tags.length > 3) {
+                const moreTagElement = document.createElement('span');
+                moreTagElement.classList.add('tag');
+                moreTagElement.textContent = "More...";
+                tagsDiv.appendChild(moreTagElement);
+            }
+        }
+
         imageDiv.appendChild(image);
+        imageDiv.appendChild(tagsDiv);
         galleryContainer.appendChild(imageDiv);
 
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    image.src = `/files/${selectedCategory}/${fileName}`;  // Lazy load the image
-                    observer.disconnect();  // Stop observing once the image has been loaded
-                } else {
-                    image.src = '';
+                if (entry.isIntersecting && !imageCache.has(fileName)) {
+                    image.src = `/files/${selectedCategory}/${fileName}`;
+                    imageCache.add(fileName); // Cache the loaded image
+                    observer.disconnect();
                 }
             });
-        }, { threshold: 0.5 }); // Trigger when 50% of the image is in view
+        }, { threshold: 0.5 });
 
         observer.observe(imageDiv);
-    });
+    }
 }
 
 
-function showContextMenu(event, fileName) {
-    event.preventDefault();
-
-    const contextMenu = document.getElementById("context-menu");
-    contextMenu.style.left = `${event.pageX}px`;
-    contextMenu.style.top = `${event.pageY}px`;
-    contextMenu.classList.add("active");
-
-    const deleteOption = document.getElementById("delete-option");
-    deleteOption.onclick = function () {
-        deleteImage(fileName);
-        contextMenu.classList.remove("active");
-    };
-
-    document.addEventListener("click", () => {
-        contextMenu.classList.remove("active");
-    }, { once: true });
-}
-
-function loadImages() {
+async function loadImages() {
     const galleryContainer = document.getElementById('image-gallery');
     const selectedCategory = document.getElementById("category").value;
-    console.log(`Loading images for category: '${selectedCategory}'`);
 
     if (!selectedCategory) {
         const dropMessage = document.createElement('div');
-        dropMessage.textContent = "No Category found Select the category first!.";
+        dropMessage.textContent = "No Category found Select the category first!";
         dropMessage.classList.add('drop-message');
         galleryContainer.appendChild(dropMessage);
         return;
@@ -285,19 +295,18 @@ function loadImages() {
 
     uploadedImages.clear();
 
-    fetch(`/images?category=${encodeURIComponent(selectedCategory)}`)
-        .then(response => {
-            console.log(response);
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
+    try {
+        const response = await fetch(`/images?category=${encodeURIComponent(selectedCategory)}`);
+        const data = await response.json();
+
+        if (data.images) {
             data.images.forEach(fileName => uploadedImages.add(fileName));
             generateImageGallery(); // This will use the ordered list from the server
-        })
-        .catch(err => console.error('Error loading images:', err));
+        }
+    } catch (err) {
+        console.error('Error loading images:', err);
+    }
 }
-
 
 function deleteImage(fileName) {
     const selectedCategory = document.getElementById("category").value;

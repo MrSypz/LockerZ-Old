@@ -1,6 +1,6 @@
 {
   "name": "lockerz",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "main.js",
   "icon": "src/public/resource/assets/favicon.ico",
   "scripts": {
@@ -19,7 +19,8 @@
     "electron-packager": "^17.1.2"
   },
   "dependencies": {
-    "axios": "^1.7.7"
+    "axios": "^1.7.7",
+    "sqlite3": "^5.1.7"
   },
   "build": {
     "appId": "LockerZ",
@@ -28,7 +29,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "src/public/resource/assets/favicon.ico"
