@@ -106,18 +106,18 @@
 </head>
 
 <body>
-    <div class="roundconer">
-        <div class="loader-container">
-            <div class="loader"></div>
-            <div class="loading-text">LockerZ Initalize..</div>
-        </div>
+<div class="roundconer">
+    <div class="loader-container">
+        <div class="loader"></div>
+        <div class="loading-text">LockerZ Initializing...</div>
     </div>
-    <script>
-        window.electron.onFlaskLoaded((message) => {
-            if (message !== null)
-                document.querySelector('.loading-text').textContent = message;
-        });
-    </script>
+</div>
+<script>
+    window.electron.onFlaskLoaded((message) => {
+        if (message !== null)
+            document.querySelector('.loading-text').textContent = message;
+    });
+</script>
 </body>
 
 </html>
