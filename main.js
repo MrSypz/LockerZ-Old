@@ -171,7 +171,7 @@ function createMainWindow() {
             preload: path.join(__dirname, 'preload.js'),  // Ensure this path is correct
             nodeIntegration: true,
             enableRemoteModule: true,
-            // devTools: false
+            devTools: false
         },
         autoHideMenuBar: true,
         icon: path.join(__dirname, 'public', 'resource', 'assets', 'favicon.ico'),

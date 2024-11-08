@@ -46,17 +46,12 @@ function populateCategorySelector() {
 
 function updateCategory() {
     const categorySelect = document.getElementById("category");
-    const currentCategorySpan = document.getElementById("currentCategory");
     const selectedCategory = categorySelect.value;
+    window.electron.updateDiscordStatus("Looking for drawing references", "Gather " + categorySelect, "findingref", "Searching for inspiration");
 
     localStorage.setItem('lastSelectedCategory', selectedCategory);
 
-    const updateCurrentCategory = () => {
-        const selectedCategory = categorySelect.value;
-        currentCategorySpan.textContent = selectedCategory || "No category selected"; // Fallback text
-    };
-    updateCurrentCategory();
-    categorySelect.addEventListener("change", updateCurrentCategory);    loadImages();
+    loadImages();
 }
 
 let categoryToDelete = null;  // To store the category that the user intends to delete
@@ -360,9 +355,6 @@ function setupDropZone() {
 
         const selectedCategory = categorySelect.value;
         const categoryPath = await window.electron.getCategoryPath(selectedCategory);  // Get the full path for the selected category
-
-        document.getElementById("currentCategory").addEventListener("change", selectedCategory);
-
 
         if (filePaths.length > 0 && filePaths[0] && categoryPath) {
             window.electron.sendFilePaths({
