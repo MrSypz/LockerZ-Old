@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, send_from_directory, render_template,
 import json
 import os
 import threading
-import shutil
 
 app = Flask(__name__, static_folder='public', template_folder='public')
 
