@@ -2,8 +2,34 @@ from flask import Flask, request, jsonify, send_from_directory, render_template,
 import json
 import os
 import threading
+from pypresence import Presence
 
 app = Flask(__name__, static_folder='public', template_folder='public')
+
+client_id = '1292399247441788978'  # Replace with your Discord application's client ID
+rpc = Presence(client_id)
+rpc.connect()
+
+# Set initial status
+rpc.update(
+    details="Looking for drawing references",
+    state="Idle",
+    large_image="idle",
+    large_text="Searching for inspiration"  # Using "Watching"
+)
+
+@app.route('/update_status', methods=['POST'])
+def update_status():
+    status_details = request.json.get('details')
+    status_state = request.json.get('state')
+
+    rpc.update(
+        details=status_details,
+        state=status_state,
+        large_image="idle",
+        large_text="Browsing LockerZ"
+    )
+    return jsonify({'message': 'Discord status updated successfully'})
 
 def get_folder_path():
     try:

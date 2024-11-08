@@ -1,6 +1,6 @@
 const { ipcMain, app, BrowserWindow, dialog } = require('electron');
 const path = require('path');
-const fs = require('fs'); 
+const fs = require('fs');
 const { fork } = require('child_process');
 const packageInfo = require('./package.json');  // Load package.json
 const axios = require('axios'); // Use axios to communicate with Flask
@@ -202,6 +202,7 @@ function showLoadingScreen() {
         show: true,
         webPreferences: {
             nodeIntegration: true,
+            devTools: false,
             preload: path.join(__dirname, 'preload.js')  // Add a preload script
         },
     });

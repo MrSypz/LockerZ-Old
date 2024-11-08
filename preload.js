@@ -86,7 +86,6 @@ contextBridge.exposeInMainWorld('electron', {
     },
     deleteTagFromImage: (fileName, tag) => {
         return new Promise((resolve, reject) => {
-            // First, get the image id
             db.get("SELECT id FROM images WHERE file_name = ?", [fileName], (err, row) => {
                 if (err) {
                     return reject('Error querying the image: ' + err.message);
