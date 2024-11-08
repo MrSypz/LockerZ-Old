@@ -2,7 +2,8 @@ const uploadedImages = new Set();
 
 function populateCategorySelector() {
     const categorySelect = document.getElementById("category");
-    fetch('/categories')  // Adjust this URL based on your setup
+
+    fetch('/categories')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
@@ -20,12 +21,18 @@ function populateCategorySelector() {
                     categorySelect.appendChild(option);
                 });
 
-                categorySelect.value = data.categories[0]; // Set the first category as selected
+                const lastSelectedCategory = localStorage.getItem('lastSelectedCategory');
+
+                if (lastSelectedCategory && data.categories.includes(lastSelectedCategory)) {
+                    categorySelect.value = lastSelectedCategory;
+                } else {
+                    categorySelect.value = data.categories[0];
+                }
             } else {
                 let option = document.createElement("option");
                 option.value = '';
                 option.textContent = 'No categories found';
-                option.disabled = true;  // Disable the "No categories" option to prevent selection
+                option.disabled = true;
                 categorySelect.appendChild(option);
             }
 
@@ -36,18 +43,18 @@ function populateCategorySelector() {
         });
 }
 
+
 function updateCategory() {
-    const categoryList = document.getElementById("category").value;
-    if (categoryList.trim() === '')
-        document.getElementById("currentCategory").textContent = "No category available";
-    else
-        document.getElementById("currentCategory").textContent = categoryList;
+    const categorySelect = document.getElementById("category");
+    const selectedCategory = categorySelect.value;
+
+    localStorage.setItem('lastSelectedCategory', selectedCategory);
 
     loadImages();
 }
 
 let categoryToDelete = null;  // To store the category that the user intends to delete
-
+// Only use in category.html
 function displayCategories() {
     const categoryList = document.getElementById("category-list");
     const editCategoryModal = document.getElementById("edit-category-modal");
@@ -120,10 +127,9 @@ function displayCategories() {
         confirmModal.style.display = "none"; // Hide the confirm modal without deleting
     });
 }
-
+// Only use in category.html
 // Function to rename the category (this is the core edit functionality)
 function editCategory(oldCategory, newCategory) {
-    // Send the update request to the server to rename the category
     fetch('/rename_category', {
         method: 'POST',
         headers: {
@@ -144,6 +150,7 @@ function editCategory(oldCategory, newCategory) {
         .catch(err => console.error("Error renaming category: ", err));
 }
 
+// Only use in category.html
 
 function deleteCategory(category) {
     fetch('/delete_category', {
@@ -162,7 +169,7 @@ function deleteCategory(category) {
         })
         .catch(err => console.error(err));
 }
-
+// Only use in category.html
 function createCategory(newCategory) {
     if (newCategory) {
         fetch('/create_category', {
