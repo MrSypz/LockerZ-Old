@@ -6,6 +6,9 @@ const flaskPath = path.join(__dirname, 'src', 'app.py');
 
 let flaskProcess;
 
+process.send({ type: 'flask-progress', message: 'Flask is initializing...' });
+
+
 function startFlask() {
     flaskProcess = spawn('python', [flaskPath]);
 

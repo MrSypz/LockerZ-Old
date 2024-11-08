@@ -7,6 +7,7 @@ const axios = require('axios'); // Use axios to communicate with Flask
 
 let mainWindow;
 let flaskProcess;
+let loadingWindow;
 
 ipcMain.handle('get-version', () => {
     return packageInfo.version;
@@ -124,21 +125,26 @@ function startFlask() {
             if (message.type === 'flask-ready') {
                 console.log(message.message);
                 resolve(message.message); // Flask is ready, resolve the Promise
+                loadingWindow.webContents.send('flask-loaded', 'Flask is ready!');  // Send readiness message
             }
             if (message.type === 'flask-output') {
                 console.log('Flask output:', message.data);
+                loadingWindow.webContents.send('flask-loaded', message.data);  // Send Flask output to the loading window
             }
             if (message.type === 'flask-error') {
                 console.error('Flask error:', message.data);
+                // loadingWindow.webContents.send('flask-loaded', `Flask error: ${message.data}`);  // Send error message
             }
             if (message.type === 'flask-progress') {
                 console.log(message.message);
+                loadingWindow.webContents.send('flask-loaded', message.message);  // Send progress update to the loading window
             }
         });
 
         flaskProcess.on('error', (err) => {
             console.error('Flask process error:', err);
             reject(new Error('Flask process failed to start.'));
+            loadingWindow.webContents.send('flask-loaded', `Flask process error: ${err.message}`);  // Send error to loading window
         });
 
         flaskProcess.on('exit', (code) => {
@@ -159,6 +165,7 @@ function createMainWindow() {
             preload: path.join(__dirname, 'preload.js'),  // Ensure this path is correct
             nodeIntegration: true,
             enableRemoteModule: true,
+            devTools: false
         },
         autoHideMenuBar: true,
         icon: path.join(__dirname, 'public', 'resource', 'assets', 'favicon.ico'),
@@ -186,7 +193,7 @@ function createMainWindow() {
 }
 
 function showLoadingScreen() {
-    const loadingWindow = new BrowserWindow({
+    loadingWindow = new BrowserWindow({
         width: 400,
         height: 400,
         frame: false,
