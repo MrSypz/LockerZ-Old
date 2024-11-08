@@ -53,8 +53,6 @@
         </div>
     </div>
 
-
-
     <div class="container">
         <div id="context-menu" class="context-menu" style="display: none;">
             <ul>
@@ -77,6 +75,8 @@
     <script src="{{ lookup }}scripts/Alertz.js"></script>
 
     <script>
+        window.electron.updateDiscordStatus("Managing Gallery", "Creating a new category", "fightingwithmyownprogram" , "Edit Category");
+
         document.addEventListener("DOMContentLoaded", function () {
             populateCategorySelector();
             displayCategories();

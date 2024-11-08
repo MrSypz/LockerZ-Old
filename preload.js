@@ -135,4 +135,6 @@ contextBridge.exposeInMainWorld('electron', {
             callback(data);  // Trigger the callback with the data received
         });
     },
+    updateDiscordStatus: (details, state, largeImageKey = 'idle', largeImageText = 'LockerZ App') =>
+        ipcRenderer.send('update-status', details, state, largeImageKey, largeImageText)
 });

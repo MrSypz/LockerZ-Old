@@ -3,7 +3,13 @@ const path = require('path');
 const fs = require('fs');
 const { fork } = require('child_process');
 const packageInfo = require('./package.json');  // Load package.json
+const RPC = require('discord-rpc');
 const axios = require('axios'); // Use axios to communicate with Flask
+
+
+const rpc = new RPC.Client({ transport: 'ipc' });
+const clientId = '1292399247441788978';
+
 
 let mainWindow;
 let flaskProcess;
@@ -165,7 +171,7 @@ function createMainWindow() {
             preload: path.join(__dirname, 'preload.js'),  // Ensure this path is correct
             nodeIntegration: true,
             enableRemoteModule: true,
-            devTools: false
+            // devTools: false
         },
         autoHideMenuBar: true,
         icon: path.join(__dirname, 'public', 'resource', 'assets', 'favicon.ico'),
@@ -174,9 +180,14 @@ function createMainWindow() {
 
     mainWindow.loadURL('http://localhost:5000');
 
+    rpc.on('ready', () => {
+        updateRichPresence('Starting LockerZ', 'Idle', 'idle', 'LockerZ App');
+    });
+
+    rpc.login({ clientId }).catch(console.error);
+
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();  // Show the window when ready
-        // mainWindow.webContents.openDevTools();
     });
 
     mainWindow.webContents.on('did-finish-load', () => {
@@ -191,6 +202,20 @@ function createMainWindow() {
         flaskProcess.send({ type: 'shutdown' });
     });
 }
+function updateRichPresence(details, state, largeImageKey = 'idle', largeImageText = 'LockerZ App') {
+    rpc.setActivity({
+        details: details,
+        state: state,
+        largeImageKey: largeImageKey,
+        largeImageText: largeImageText,
+    });
+}
+
+// IPC listener for updating status from the renderer process
+ipcMain.on('update-status', (event, details, state, largeImageKey, largeImageText) => {
+    console.log(`Updating status: ${details} - ${state} with image ${largeImageKey}`);
+    updateRichPresence(details, state, largeImageKey, largeImageText);
+});
 
 function showLoadingScreen() {
     loadingWindow = new BrowserWindow({

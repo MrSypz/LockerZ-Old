@@ -103,7 +103,9 @@
         </div>
     </main>
     <script>
+
         window.electron.getVersion().then(version => {
+            window.electron.updateDiscordStatus("Chillin' on Homepage", "Idle ᶻ 𝘇 𐰁 LockerZ :" + version, "idle", "On the Homepage");
             document.getElementById('app-version').textContent = version;  // Set version text
         }).catch(err => {
             console.error('Error getting version:', err);
