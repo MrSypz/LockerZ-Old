@@ -78,21 +78,6 @@ def create_category():
         return jsonify(success=True, message="Category created"), 201
     return jsonify(success=False, message="Category already exists"), 400
 
-@app.route('/upload_file', methods=['POST'])
-def upload_file():
-    file_path = request.form['file_path']
-    category = request.form['category']
-    category_path = os.path.join(folder_path, category)
-
-    if not os.path.exists(category_path):
-        os.makedirs(category_path)
-
-    try:
-        shutil.move(file_path, os.path.join(category_path, os.path.basename(file_path)))
-        return jsonify(success=True)
-    except Exception as e:
-        return jsonify(success=False, error=str(e))
-
 
 @app.route('/rename_category', methods=['POST'])
 def rename_category():
