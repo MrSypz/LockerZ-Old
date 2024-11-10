@@ -21,7 +21,6 @@ ipcMain.handle('get-category-path', (event, category) => {
 ipcMain.handle('get-categories', () => {
     try {
         const categories = [];
-        console.log(`Fetching categories from: ${folder_path}`);  // Log folder path
         const files = fs.readdirSync(folder_path);
 
         files.forEach(name => {
@@ -30,11 +29,8 @@ ipcMain.handle('get-categories', () => {
                 categories.push(name);
             }
         });
-
-        console.log('Categories found:', categories);  // Log the categories found
         return categories;  // Return the categories as an array
     } catch (e) {
-        console.error('Error fetching categories:', e);
         return [];  // Return an empty array in case of error
     }
 });
@@ -42,23 +38,23 @@ ipcMain.handle('get-categories', () => {
 ipcMain.handle('move-file', async (event, { filePath, newCategoryPath, fileName }) => {
     const destinationPath = path.join(newCategoryPath, fileName);
     const cfilePath = path.join(filePath,fileName);
-    console.log("Moving file:");
-    console.log("File Path:", cfilePath);
-    console.log("Destination Path:", destinationPath);
+    // console.log("Moving file:");
+    // console.log("File Path:", cfilePath);
+    // console.log("Destination Path:", destinationPath);
 
     try {
         // Ensure destination folder exists, create it if it doesn't
         if (!fs.existsSync(newCategoryPath)) {
             fs.mkdirSync(newCategoryPath, { recursive: true });
-            console.log(`Created new category folder at: ${newCategoryPath}`);
+            // console.log(`Created new category folder at: ${newCategoryPath}`);
         }
 
         // Move the file from the current category path to the new category path
         fs.renameSync(cfilePath, destinationPath);
-        console.log(`File moved from ${cfilePath} to ${destinationPath}`);
+        // console.log(`File moved from ${cfilePath} to ${destinationPath}`);
         return true;  // Success
     } catch (error) {
-        console.error('Error moving file:', error);
+        // console.error('Error moving file:', error);
         return false;  // Error
     }
 });
