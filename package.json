@@ -1,6 +1,6 @@
 {
   "name": "lockerz",
-  "version": "0.1.3-indev",
+  "version": "0.1.3-beta",
   "main": "main.js",
   "icon": "src/public/resource/assets/favicon.ico",
   "scripts": {
