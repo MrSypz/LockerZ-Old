@@ -93,36 +93,6 @@ def rename_category():
     else:
         return jsonify(success=False, message="Category does not exist or new category name already exists."), 400
 
-@app.route('/files/<path:category>/<path:filename>', methods=['GET'])
-def serve_file(category, filename):
-    category_path = os.path.join(folder_path, category)
-    return send_from_directory(category_path, filename)
-
-@app.route('/categories', methods=['GET'])
-def get_categories():
-    try:
-        categories = []
-        for name in os.listdir(folder_path):
-            dir_path = os.path.join(folder_path, name)
-            if os.path.isdir(dir_path): 
-                categories.append(name)
-
-        return jsonify({"categories": categories}) 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500  
-
-@app.route('/images', methods=['GET'])
-def get_images():
-    category = request.args.get('category')
-    category_path = os.path.join(folder_path, category)
-
-    if os.path.exists(category_path):
-        images = [f for f in os.listdir(category_path) if os.path.isfile(os.path.join(category_path, f))]
-        images.sort(key=lambda x: os.path.getmtime(os.path.join(category_path, x)), reverse=True)
-
-        return jsonify(images=images)
-    return jsonify(images=[]), 404
-
 @app.route('/delete_image', methods=['DELETE'])
 def delete_image():
     data = request.json

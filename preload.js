@@ -112,29 +112,33 @@ contextBridge.exposeInMainWorld('electron', {
             });
         });
     },
+    getCategories: () => {
+        console.log('Requesting categories from main process...');
+        return ipcRenderer.invoke('get-categories')
+            .then(categories => {
+                console.log('Categories received:', categories);
+                return categories;
+            })
+            .catch(err => {
+                console.error('Error in IPC request for categories:', err);
+                return [];  // Handle errors gracefully
+            });
+    },
     onFlaskLoaded: (callback) => ipcRenderer.on('flask-loaded', (event, message) => callback(message)),
+    moveFile: (data) => ipcRenderer.invoke('move-file', data),
+    getImages: (category) => ipcRenderer.invoke('get-images', category),
+    getCategoryPath: (category) => ipcRenderer.invoke('get-category-path', category),
     getVersion: () => ipcRenderer.invoke('get-version'),
     selectFolder: () => ipcRenderer.invoke('select-folder'),
     updateFolderPath: (newFolderPath) => ipcRenderer.invoke('update-folder-path', newFolderPath),
     getFilePath(file) {
         return webUtils.getPathForFile(file);  // Using webUtils to get the file path
     },
-    getCategoryPath: async () => {
-        try {
-            const response = await fetch('http://localhost:5000/get_folder_path');  // Make sure Flask is running at this address
-            const data = await response.json();
-            return data.folderPath;  // Return the folder path
-        } catch (error) {
-            console.error("Error fetching folder path:", error);
-            return null;
-        }
-    },
+    serveFile: (category, filename) => ipcRenderer.invoke('serve-file', category, filename),
     sendFilePaths: (filePaths) => ipcRenderer.send('file-drop', filePaths),
     onFileUploadComplete: (callback) => {
         ipcRenderer.on('file-upload-complete', (event, data) => {
             callback(data);  // Trigger the callback with the data received
         });
     },
-    updateDiscordStatus: (details, state, largeImageKey = 'idle', largeImageText = 'LockerZ App') =>
-        ipcRenderer.send('update-status', details, state, largeImageKey, largeImageText)
 });

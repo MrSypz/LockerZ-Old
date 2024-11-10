@@ -10,6 +10,8 @@ function showContextMenu(event, fileName, isTag, tagkey) {
     if (!isTag || tagkey == null) {
         const deleteOption = document.getElementById("delete-option");
         const addTagOption = document.getElementById("add-tag-option");
+        const moveCategoryOption = document.getElementById("move-category-option");
+
 
         deleteOption.onclick = function () {
             deleteImage(fileName);
@@ -20,6 +22,12 @@ function showContextMenu(event, fileName, isTag, tagkey) {
             openTagModal(fileName); // Open the modal for adding a tag
             contextMenu.classList.remove("active"); // Hide context menu
         };
+
+        moveCategoryOption.onclick = async function () {
+            openMoveCategoryModal(fileName);
+            contextMenu.classList.remove("active");
+        };
+
 
     } else {
         const deleteTagOption = document.createElement("li");

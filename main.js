@@ -3,13 +3,10 @@ const path = require('path');
 const fs = require('fs');
 const { fork } = require('child_process');
 const packageInfo = require('./package.json');  // Load package.json
-const RPC = require('discord-rpc');
-const axios = require('axios'); // Use axios to communicate with Flask
+const axios = require('axios');
+const os = require("node:os"); // Use axios to communicate with Flask
 
-
-const rpc = new RPC.Client({ transport: 'ipc' });
-const clientId = '1292399247441788978';
-
+const folder_path = getFolderPath();
 
 let mainWindow;
 let flaskProcess;
@@ -18,9 +15,79 @@ let loadingWindow;
 ipcMain.handle('get-version', () => {
     return packageInfo.version;
 });
-
 ipcMain.handle('get-category-path', (event, category) => {
-    return path.join(folderPath, category);  // Return the full category path
+    return path.join(folder_path, category);  // Return the full category path
+});
+ipcMain.handle('get-categories', () => {
+    try {
+        const categories = [];
+        console.log(`Fetching categories from: ${folder_path}`);  // Log folder path
+        const files = fs.readdirSync(folder_path);
+
+        files.forEach(name => {
+            const dirPath = path.join(folder_path, name);
+            if (fs.statSync(dirPath).isDirectory()) {
+                categories.push(name);
+            }
+        });
+
+        console.log('Categories found:', categories);  // Log the categories found
+        return categories;  // Return the categories as an array
+    } catch (e) {
+        console.error('Error fetching categories:', e);
+        return [];  // Return an empty array in case of error
+    }
+});
+
+ipcMain.handle('move-file', async (event, { filePath, newCategoryPath, fileName }) => {
+    const destinationPath = path.join(newCategoryPath, fileName);
+    const cfilePath = path.join(filePath,fileName);
+    console.log("Moving file:");
+    console.log("File Path:", cfilePath);
+    console.log("Destination Path:", destinationPath);
+
+    try {
+        // Ensure destination folder exists, create it if it doesn't
+        if (!fs.existsSync(newCategoryPath)) {
+            fs.mkdirSync(newCategoryPath, { recursive: true });
+            console.log(`Created new category folder at: ${newCategoryPath}`);
+        }
+
+        // Move the file from the current category path to the new category path
+        fs.renameSync(cfilePath, destinationPath);
+        console.log(`File moved from ${cfilePath} to ${destinationPath}`);
+        return true;  // Success
+    } catch (error) {
+        console.error('Error moving file:', error);
+        return false;  // Error
+    }
+});
+
+ipcMain.handle('serve-file', (event, category, filename) => {
+    const categoryPath = path.join(folder_path, category);
+    const filePath = path.join(categoryPath, filename);
+
+    if (fs.existsSync(filePath)) {
+        return filePath;
+    } else {
+        return null;
+    }
+});
+
+ipcMain.handle('get-images', (event, category) => {
+    const categoryPath = path.join(folder_path, category);
+
+    try {
+        const images = fs.readdirSync(categoryPath).filter(file => {
+            const extname = path.extname(file).toLowerCase();
+            return extname === '.jpg' || extname === '.png' || extname === '.jpeg' || extname ==='.jfif';  // Filter image files
+        });
+
+        return { images }; // Return the list of image filenames
+    } catch (err) {
+        console.error('Error fetching images:', err);
+        return { error: 'Failed to load images' };
+    }
 });
 
 ipcMain.on('sendFilePaths', (event, { filePaths, categoryPath, selectedCategory }) => {
@@ -99,7 +166,6 @@ ipcMain.on('file-drop', (event, { filePaths, categoryName, categoryPath }) => {
         }
     });
     amount > 1 ? event.reply('file-upload-complete', { success: true, message: `All ${amount} files uploaded successfully` }) : event.reply('file-upload-complete', { success: true, message: `${amount} file uploaded successfully` })
-
 });
 
 
@@ -122,6 +188,21 @@ ipcMain.handle('update-folder-path', async (event, newFolderPath) => {
         return { success: false };
     }
 });
+
+
+function getFolderPath() {
+    try {
+        const configPath = path.join(os.homedir(), 'AppData', 'Roaming', 'lockerz', 'config.json');
+        if (fs.existsSync(configPath)) {
+            const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+            return config.folderPath || path.join(os.homedir(), 'LockerZ');  // Default path if not found
+        }
+        return path.join(os.homedir(), 'LockerZ');  // Fallback if config is missing
+    } catch (e) {
+        console.error('Error reading config:', e);
+        return path.join(os.homedir(), 'LockerZ');  // Fallback path if reading the config fails
+    }
+}
 
 function startFlask() {
     return new Promise((resolve, reject) => {
@@ -171,7 +252,8 @@ function createMainWindow() {
             preload: path.join(__dirname, 'preload.js'),  // Ensure this path is correct
             nodeIntegration: true,
             enableRemoteModule: true,
-            devTools: false
+            webSecurity: false
+            // devTools: false
         },
         autoHideMenuBar: true,
         icon: path.join(__dirname, 'public', 'resource', 'assets', 'favicon.ico'),
@@ -179,12 +261,6 @@ function createMainWindow() {
     });
 
     mainWindow.loadURL('http://localhost:5000');
-
-    rpc.on('ready', () => {
-        updateRichPresence('Starting LockerZ', 'Idle', 'idle', 'LockerZ App');
-    });
-
-    rpc.login({ clientId }).catch(console.error);
 
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();  // Show the window when ready
@@ -202,20 +278,6 @@ function createMainWindow() {
         flaskProcess.send({ type: 'shutdown' });
     });
 }
-function updateRichPresence(details, state, largeImageKey = 'idle', largeImageText = 'LockerZ App') {
-    rpc.setActivity({
-        details: details,
-        state: state,
-        largeImageKey: largeImageKey,
-        largeImageText: largeImageText,
-    });
-}
-
-// IPC listener for updating status from the renderer process
-ipcMain.on('update-status', (event, details, state, largeImageKey, largeImageText) => {
-    console.log(`Updating status: ${details} - ${state} with image ${largeImageKey}`);
-    updateRichPresence(details, state, largeImageKey, largeImageText);
-});
 
 function showLoadingScreen() {
     loadingWindow = new BrowserWindow({

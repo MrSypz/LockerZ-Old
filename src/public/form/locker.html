@@ -42,41 +42,51 @@
         <button class="agree-btn" id="alert-ok-button">OK</button>
     </div>
 </div>
-<div class="container">
-    <h1>Locker Container</h1>
-    <div class="category-selector">
-        <label for="category">Select Category:</label>
-        <select id="category" class="dropdown" onchange="updateCategory()"></select>
+<div id="move-category" class="lockerz-alert" style="display: none;">
+    <div class="alert-content">
+        <h2>Select Category</h2>
+        <select id="category_id" class="dropdown"></select>
+        <button class="agree-btn" id="move-confirm-button">Move</button>
+        <button class="disagree-btn" id="move-cancel-button">Close</button>
     </div>
-
-    <div id="context-menu" class="context-menu">
-        <ul>
-            <li id="delete-option">Delete</li>
-            <li id="add-tag-option">Add Tag</li> <!-- New "Add Tag" option -->
-        </ul>
-    </div>
-
-    <div id="modalImgPreview" class="modal" onclick="closeModal(event)">
-        <span class="close" onclick="closeModal(event)">&times;</span>
-        <img class="modal-content" id="modalImg" onclick="toggleZoom(event)">
-        <div id="imageSize" class="image-size"></div>
-    </div>
-
-    <div class="image-gallery" id="image-gallery"></div>
 </div>
-<script src="{{ lookup }}scripts/Alertz.js" defer></script>
-<script src="{{ lookup }}scripts/LockerList.js" defer></script>
-<script src="{{ lookup }}scripts/ModalImgAction.js" defer></script>
-<script src="{{ lookup }}scripts/TagKey.js" defer></script>
-<script src="{{ lookup }}scripts/ContextMenu.js" defer></script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        populateCategorySelector();
-        setupDropZone();
-    });
-    window.electron.updateDiscordStatus("Gather the idea on ", "Looking for ref. ", "findingref", "Searching for inspiration");
-</script>
+    <div class="container">
+        <h1>Locker Container</h1>
+        <div class="category-selector">
+            <label for="category">Select Category:</label>
+            <select id="category" class="dropdown" onchange="updateCategory()"></select>
+        </div>
+
+        <div id="context-menu" class="context-menu">
+            <ul>
+                <li id="delete-option">Delete</li>
+                <li id="add-tag-option">Add Tag</li>
+                <li id="move-category-option">Move</li>
+            </ul>
+        </div>
+
+        <div id="modalImgPreview" class="modal" onclick="closeModal(event)">
+            <span class="close" onclick="closeModal(event)">&times;</span>
+            <img class="modal-content" id="modalImg" onclick="toggleZoom(event)">
+            <div id="imageSize" class="image-size"></div>
+        </div>
+
+        <div class="image-gallery" id="image-gallery"></div>
+    </div>
+    <script src="{{ lookup }}scripts/Alertz.js" defer></script>
+    <script src="{{ lookup }}scripts/LockerList.js" defer></script>
+    <script src="{{ lookup }}scripts/ModalImgAction.js" defer></script>
+    <script src="{{ lookup }}scripts/TagKey.js" defer></script>
+    <script src="{{ lookup }}scripts/ContextMenu.js" defer></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            populateCategorySelector();
+            setupDropZone();
+        });
+
+    </script>
 </body>
 
 </html>
