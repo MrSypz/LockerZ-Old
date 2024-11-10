@@ -76,7 +76,7 @@ ipcMain.handle('get-images', (event, category) => {
     try {
         const images = fs.readdirSync(categoryPath).filter(file => {
             const extname = path.extname(file).toLowerCase();
-            return extname === '.jpg' || extname === '.png' || extname === '.jpeg' || extname ==='.jfif';  // Filter image files
+            return extname === '.jpg' || extname === '.png' || extname === '.jpeg' || extname ==='.jfif' || extname ==='.webp';  // Filter image files
         });
 
         return { images }; // Return the list of image filenames
