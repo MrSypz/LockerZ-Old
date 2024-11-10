@@ -12,7 +12,6 @@ function showContextMenu(event, fileName, isTag, tagkey) {
         const addTagOption = document.getElementById("add-tag-option");
         const moveCategoryOption = document.getElementById("move-category-option");
 
-
         deleteOption.onclick = function () {
             deleteImage(fileName);
             contextMenu.classList.remove("active");
@@ -27,7 +26,6 @@ function showContextMenu(event, fileName, isTag, tagkey) {
             openMoveCategoryModal(fileName);
             contextMenu.classList.remove("active");
         };
-
 
     } else {
         const deleteTagOption = document.createElement("li");
@@ -44,24 +42,45 @@ function showContextMenu(event, fileName, isTag, tagkey) {
 
     contextMenu.classList.add("active");
 
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const menuWidth = contextMenu.offsetWidth;
-    const menuHeight = contextMenu.offsetHeight;
+    // Find the image element that was clicked
+    const imageElement = event.target.closest('img'); // Assuming the image is clicked directly or wrapped in a parent element
 
-    let posX = event.pageX;
-    let posY = event.pageY;
+    if (imageElement) {
+        // Get the container element
+        const container = document.querySelector('.container');
+        const containerRect = container.getBoundingClientRect();
 
-    if (posX + menuWidth > viewportWidth) {
-        posX = viewportWidth - menuWidth - 10; // 10px padding from the edge
+        // Get the image position relative to the container
+        const imageRect = imageElement.getBoundingClientRect();
+        const imageCenterX = imageRect.left + imageRect.width / 2;
+        const imageCenterY = imageRect.top + imageRect.height / 2;
+
+        // Calculate the context menu's position to center it on the image within the container
+        const menuWidth = contextMenu.offsetWidth;
+        const menuHeight = contextMenu.offsetHeight;
+
+        let posX = imageCenterX - containerRect.left - menuWidth / 2; // Center horizontally within container
+        let posY = imageCenterY - containerRect.top - menuHeight / 2; // Center vertically within container
+
+        // Prevent the menu from going off the container's bounds
+        if (posX + menuWidth > containerRect.width) {
+            posX = containerRect.width - menuWidth - 10; // 10px padding from the edge
+        }
+        if (posX < 10) {
+            posX = 10; // Ensure it stays within bounds
+        }
+
+        if (posY + menuHeight > containerRect.height) {
+            posY = containerRect.height - menuHeight - 10; // 10px padding from the edge
+        }
+        if (posY < 10) {
+            posY = 10; // Ensure it stays within bounds
+        }
+
+        // Set the context menu's position relative to the container
+        contextMenu.style.left = `${posX}px`;
+        contextMenu.style.top = `${posY}px`;
     }
-
-    if (posY + menuHeight > viewportHeight) {
-        posY = viewportHeight - menuHeight - 10; // 10px padding from the edge
-    }
-
-    contextMenu.style.left = `${posX}px`;
-    contextMenu.style.top = `${posY}px`;
 
     document.addEventListener(
         "click",

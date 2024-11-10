@@ -15,7 +15,7 @@ html, body {
     display: flex;
     flex-direction: column;
     text-align: center;
-    height: 100%;
+    height: auto;
 }
 
 .image-gallery {
